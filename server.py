@@ -19,24 +19,32 @@ def recommend():
     # Combine similar keys in each object into a new object
     combined_recommendations = {}
     for index, row in recommended_courses.iterrows():
-        course_id = row['Course ID']
-        if course_id not in combined_recommendations:
-            combined_recommendations[course_id] = {
-                'Course ID': course_id,
-                'Course Name': row['Course Name'],
-                'University': row['University'],
+        course_name = row['Course Name']
+        if course_name not in combined_recommendations:
+            combined_recommendations[course_name] = {
+                'Course Name': course_name,
+                'Course Rating': [],
                 'Difficulty Level': [],
-                'Rating': [],
-                'URL': [],
-                'Description': []
+                'Course URL': [],
+                'Course Description': [],
+                'University': row['University']
             }
-        combined_recommendations[course_id]['Difficulty Level'].append(row['Difficulty Level'])
-        combined_recommendations[course_id]['Rating'].append(row['Rating'])
-        combined_recommendations[course_id]['URL'].append(row['URL'])
-        combined_recommendations[course_id]['Description'].append(row['Description'])
+        combined_recommendations[course_name]['Course Rating'].append(row['Course Rating'])
+        combined_recommendations[course_name]['Difficulty Level'].append(row['Difficulty Level'])
+        combined_recommendations[course_name]['Course URL'].append(row['Course URL'])
+        combined_recommendations[course_name]['Course Description'].append(row['Course Description'])
 
-    # Create a list of the combined recommendations
-    final_recommendations = list(combined_recommendations.values())
+    # Create a list of the combined recommendations in the desired order
+    final_recommendations = []
+    for course_name, details in combined_recommendations.items():
+        final_recommendations.append({
+            'Course Name': course_name,
+            'Course Rating': details['Course Rating'],
+            'Difficulty Level': details['Difficulty Level'],
+            'Course URL': details['Course URL'],
+            'Course Description': details['Course Description'],
+            'University': details['University']
+        })
 
     print(final_recommendations)
     return jsonify(final_recommendations)
